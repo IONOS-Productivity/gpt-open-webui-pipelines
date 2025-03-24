@@ -1,0 +1,16 @@
+name: Test
+on:
+  push:
+    branches:
+      - 'tl**'
+jobs:
+  build:
+    runs-on: self-hosted
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Run script
+        run: |
+          echo "Hello World!"
+        env:
+          DEBUG: true
