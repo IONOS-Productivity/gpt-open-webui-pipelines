@@ -120,6 +120,14 @@ jobs:
           POD_STATUS=""
           until [ "$POD_STATUS" == "Running" ]; do
             POD_STATUS=$(kubectl get pod ${POD_NAME} -o jsonpath='{.status.phase}')
+            if [ "$POD_STATUS" == "Failed" ]; then
+              echo "Pod failed."
+              echo "git-clone:"
+              kubectl logs -c git-clone ${POD_NAME}
+              echo "kaniko:"
+              kubectl logs -c kaniko ${POD_NAME}
+              exit 1
+            fi
             if [ "$POD_STATUS" != "Running" ]; then
               echo "Waiting for pod ${POD_NAME} to be running. Current status: ${POD_STATUS}"
               sleep 5
