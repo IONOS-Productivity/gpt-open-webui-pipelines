@@ -35,7 +35,7 @@ jobs:
       - name: Create Docker Secret Config for Kaniko
         run: |
           mkdir -p $HOME/.docker
-          AUTH="$(echo -n "${{ secrets.HARBOR_USERNAME }}:${{ secrets.HARBOR_PASSWORD }}" | base64)"
+          AUTH="$(echo -n "${{ secrets.HARBOR_USERNAME }}:${{ secrets.HARBOR_PASSWORD }}" | base64 -w0 )"
           echo "{\"auths\":{\"${REGISTRY_HOST}\":{\"auth\":\"${AUTH}\"}}}" > $HOME/.docker/config.json
           set +e
           kubectl get secret dock-sec -n arc-runners
