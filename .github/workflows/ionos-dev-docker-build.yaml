@@ -39,11 +39,12 @@ jobs:
           echo "{\"auths\":{\"${REGISTRY_HOST}\":{\"auth\":\"${AUTH}\"}}}" > $HOME/.docker/config.json
           set +e
           kubectl get secret dock-sec -n arc-runners
-          if [ $? -ne 0 ]; then
-            kubectl create secret generic dock-sec --from-file=config.json=$HOME/.docker/config.json --namespace=arc-runners
-          else
-            echo "dock-sec already exists, skipping creation."
+          if [ $? -eq 0 ]; then
+            echo "dock-sec already exists, deleting it ..."
+            kubectl delete secret -n arc-runners dock-sec --ignore-not-found
           fi
+          echo "Create docker-sec ..."
+          kubectl create secret generic dock-sec --from-file=config.json=$HOME/.docker/config.json --namespace=arc-runners
           set -e
         env:
           HARBOR_USERNAME: ${{ secrets.HARBOR_USERNAME }}
